@@ -1,5 +1,3 @@
-const { get } = require("mongoose")
-
 module.exports = app => {
     const { existsOrError, notExistsOrError } = app.api.validation
 
@@ -9,7 +7,7 @@ module.exports = app => {
             name: req.body.name,
             parentId: req.body.parentId
         }
-
+        
         if(req.params.id) category.id = req.params.id
 
         try {
@@ -24,7 +22,7 @@ module.exports = app => {
                 .where({ id: category.id })
                 .then(_ => res.status(204).send())
                 .catch(err => res.status(500).send(err))
-        }else {
+        } else {
             app.db('categories')
                 .insert(category)
                 .then(_ => res.status(204).send())
@@ -54,10 +52,11 @@ module.exports = app => {
         }
     }
 
+
     const withPath = categories => {
         const getParent = (categories, parentId) => {
             const parent = categories.filter(parent => parent.id === parentId)
-            return parent.lenth ? parent [0] : null
+            return parent.length ? parent[0] : null
         }
 
         const categoriesWithPath = categories.map(category => {
@@ -83,16 +82,16 @@ module.exports = app => {
 
     const get = (req, res) => {
         app.db('categories')
-            .then(categories =>  res.json(withPath(categories)))
+            .then(categories => res.json(withPath(categories)))
             .catch(err => res.status(500).send(err))
     }
 
     const getById = (req, res) => {
         app.db('categories')
-        .where({ id: req.params.id })
-        .first()
-        .then(category => res.json(category))
-        .catch(err => res.status(500).send(err))
+            .where({ id: req.params.id })
+            .first()
+            .then(category => res.json(category))
+            .catch(err => res.status(500).send(err))
     }
 
     const toTree = (categories, tree) => {
